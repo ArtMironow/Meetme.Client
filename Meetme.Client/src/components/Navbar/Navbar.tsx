@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { userLogin, userLogout } from "../../services/authServices";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/authReducer";
 
-interface NavbarProps {
-	isAuthenticated: boolean;
-	handleLogin: () => void;
-	handleLogout: () => void;
-}
-
-export default function Navbar({
-	isAuthenticated,
-	handleLogin,
-	handleLogout,
-}: NavbarProps) {
+export default function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+	const dispatch = useDispatch<AppDispatch>();
+	const isAuthenticated = useSelector(
+		(state: RootState) => state.auth.isAuthenticated
+	);
+
+	const handleLogout = async () => {
+		await userLogout(dispatch);
+	};
 
 	const toggleMenu = () => {
 		setIsMenuOpen((prev) => !prev);
@@ -73,7 +75,7 @@ export default function Navbar({
 						</button>
 					) : (
 						<button
-							onClick={handleLogin}
+							onClick={userLogin}
 							className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition"
 						>
 							Login
@@ -107,7 +109,7 @@ export default function Navbar({
 							</button>
 						) : (
 							<button
-								onClick={handleLogin}
+								onClick={userLogin}
 								className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition"
 							>
 								Login
